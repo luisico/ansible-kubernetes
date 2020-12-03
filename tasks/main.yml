@@ -1,0 +1,53 @@
+---
+- name: enable epel repository
+  yum:
+    name: epel-release
+
+- name: enable br_netfilter
+  modprobe:
+    name: br_netfilter
+
+- name: fix iptables ipv4
+  sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: 1
+
+- name: fix iptables ipv6
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+
+- name: disable swap mount
+  mount:
+    path: swap
+    fstype: swap
+    state: absent
+
+- name: install jq
+  yum:
+    name: jq
+
+- name: add kubernetes repository
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    exclude: kube*
+
+- name: install kubernetes tools
+  yum:
+    name:
+      - 'kubelet-{{kubernetes_version}}*'
+      - 'kubeadm-{{kubernetes_version}}*'
+      - 'kubectl-{{kubernetes_version}}*'
+    disable_excludes: kubernetes
+
+- name: enable kubelet service
+  systemd:
+    name: kubelet
+    enabled: true
