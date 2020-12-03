@@ -42,9 +42,9 @@
 - name: install kubernetes tools
   yum:
     name:
-      - 'kubelet-{{kubernetes_version}}*'
-      - 'kubeadm-{{kubernetes_version}}*'
-      - 'kubectl-{{kubernetes_version}}*'
+      - 'kubelet-{{ kubernetes_version }}*'
+      - 'kubeadm-{{ kubernetes_version }}*'
+      - 'kubectl-{{ kubernetes_version }}*'
     disable_excludes: kubernetes
 
 - name: enable kubelet service
