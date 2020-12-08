@@ -1,6 +1,6 @@
 ---
-# https://kubernetes.io/docs/setup/production-environment/container-runtimes/
-- name: fix iptables
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
+- name: let iptables see bridged traffic
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
     value: '1'
