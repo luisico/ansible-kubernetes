@@ -4,6 +4,7 @@
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
     value: '1'
+    sysctl_file: /etc/sysctl.d/50-kubernetes.conf
 
 - name: add kubernetes repository
   yum_repository:
