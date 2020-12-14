@@ -19,13 +19,12 @@
       - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     exclude: kubelet kubeadm kubectl
 
-- name: install kubernetes tools
+- name: install kubernetes tools {{ kubernetes_version }}
   yum:
-    name:
-      - 'kubelet-{{ kubernetes_version }}*'
-      - 'kubeadm-{{ kubernetes_version }}*'
-      - 'kubectl-{{ kubernetes_version }}*'
+    name: '{{ kubernetes_packages }}'
     disable_excludes: kubernetes
+    state: '{{ kubernetes_packages_state }}'
+    allow_downgrade: yes
 
 - name: enable kubelet service
   systemd:
