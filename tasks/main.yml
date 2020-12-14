@@ -25,8 +25,12 @@
     disable_excludes: kubernetes
     state: '{{ kubernetes_packages_state }}'
     allow_downgrade: yes
+  register: kubernetes__r_install
 
 - name: enable kubelet service
   systemd:
     name: kubelet
     enabled: true
+
+- name: install completion scripts
+  import_tasks: completion.yml
