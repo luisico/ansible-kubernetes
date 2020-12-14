@@ -1,0 +1,12 @@
+---
+# Default to latest version if none specified
+kubernetes_packages_version: '{{"" if kubernetes_version == "latest" else ("-" + kubernetes_version)}}'
+
+# Upgrade to latest available version matching kubernetes_version if the version contains a wildcard or "latest" is specified.
+kubernetes_packages_state: '{{"latest" if kubernetes_version is search("(latest|\*)") else "present"}}'
+
+# List of packages to install
+kubernetes_packages:
+  - kubelet{{ kubernetes_packages_version }}
+  - kubeadm{{ kubernetes_packages_version }}
+  - kubectl{{ kubernetes_packages_version }}

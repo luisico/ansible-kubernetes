@@ -1,0 +1,36 @@
+---
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
+- name: let iptables see bridged traffic
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    sysctl_file: /etc/sysctl.d/50-kubernetes.conf
+
+- name: add kubernetes repository
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    exclude: kubelet kubeadm kubectl
+
+- name: install kubernetes tools {{ kubernetes_version }}
+  yum:
+    name: '{{ kubernetes_packages }}'
+    disable_excludes: kubernetes
+    state: '{{ kubernetes_packages_state }}'
+    allow_downgrade: yes
+  register: kubernetes__r_install
+
+- name: enable kubelet service
+  systemd:
+    name: kubelet
+    enabled: true
+
+- name: install completion scripts
+  import_tasks: completion.yml
