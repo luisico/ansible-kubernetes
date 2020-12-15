@@ -10,3 +10,6 @@ kubernetes_packages:
   - kubelet{{ kubernetes_packages_version }}
   - kubeadm{{ kubernetes_packages_version }}
   - kubectl{{ kubernetes_packages_version }}
+
+# IP address from interface name
+kubernetes_address: "{{ hostvars[inventory_hostname]['ansible_' + kubernetes_interface].ipv4.address }}"

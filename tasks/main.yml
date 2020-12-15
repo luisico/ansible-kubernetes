@@ -27,6 +27,14 @@
     allow_downgrade: yes
   register: kubernetes__r_install
 
+- name: Specify node IP for kubelet in multi-interface hosts
+  template:
+    dest: /etc/sysconfig/kubelet
+    src: kubelet.j2
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Enable kubelet service
   systemd:
     name: kubelet

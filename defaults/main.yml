@@ -1,3 +1,6 @@
 ---
 # Kubernetes version
 kubernetes_version: 1.19.*
+
+# Kubernetes interface
+kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
