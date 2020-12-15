@@ -38,6 +38,7 @@
 - name: Enable kubelet service
   systemd:
     name: kubelet
+    state: started
     enabled: true
 
 - name: Install completion scripts
