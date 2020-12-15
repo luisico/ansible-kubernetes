@@ -4,3 +4,13 @@ kubernetes_version: 1.19.*
 
 # Kubernetes interface
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
+
+# API servers
+kubernetes_apiserver_vip: '{{ ansible_default_ipv4.address }}'
+kubernetes_apiserver_port: 6443
+
+# Pod network cidr
+kubernetes_pod_cidr: 10.1.0.0/16
+
+# Certificate key
+kubernetes_certificate_key:

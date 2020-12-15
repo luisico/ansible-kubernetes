@@ -1,0 +1,15 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+kubernetesVersion: {{ kubernetes__r_installed_version.stdout }}
+controlPlaneEndpoint: {{ kubernetes_apiserver_vip }}:{{ kubernetes_apiserver_port }}
+networking:
+  podSubnet: {{ kubernetes_pod_cidr }}
+
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+# TODO: enp0s8 might not be the interface outside vagrant
+localAPIEndpoint:
+  advertiseAddress: {{ ansible_enp0s8.ipv4.address }}
+certificateKey: {{ kubernetes_certificate_key }}

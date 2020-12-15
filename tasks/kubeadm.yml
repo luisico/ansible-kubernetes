@@ -1,0 +1,45 @@
+---
+- name: Configure kubeadm
+  template:
+    dest: /etc/kubernetes/kubeadm.yaml
+    src: kubeadm.yaml.j2
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Kubeadm init pre-check
+  # TODO: ignore errors only in vagrant
+  command: >
+    kubeadm init phase preflight --config /etc/kubernetes/kubeadm.yaml --ignore-preflight-errors=NumCPU,FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml,FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml,FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml
+  check_mode: no
+  changed_when: no
+  register: kubernetes__r_precheck
+
+- debug:
+    msg: '{{ kubernetes__r_precheck.stdout_lines + kubernetes__r_precheck.stderr_lines }}'
+
+- name: Configure control plane
+  command:
+    cmd: kubeadm init phase control-plane all --config /etc/kubernetes/kubeadm.yaml
+    creates: /etc/kubernetes/manifests/kube-controller-manager.yaml
+  register: kubernetes__r_control_plane
+
+- debug:
+    msg: '{{ kubernetes__r_control_plane.stdout_lines + kubernetes__r_control_plane.stderr_lines }}'
+  when: kubernetes__r_control_plane.changed
+
+- name: Expose control manager and scheduler metrics to prometheus
+  replace:
+    path: '/etc/kubernetes/manifests/kube-{{ item }}.yaml'
+    regexp: '127\.0\.0\.1'
+    replace: '{{ ansible_enp0s8.ipv4.address }}'
+  loop:
+    - controller-manager
+    - scheduler
+
+- name: Initialize cluster
+  command: kubeadm init --config /etc/kubernetes/kubeadm.yaml --upload-certs --skip-phases=preflight,control-plane
+  register: kubernetes__r_init
+
+- debug:
+    msg: '{{ kubernetes__r_init.stdout_lines + kubernetes__r_init.stderr_lines }}'

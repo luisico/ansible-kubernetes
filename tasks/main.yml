@@ -27,6 +27,12 @@
     allow_downgrade: yes
   register: kubernetes__r_install
 
+- name: Find kubernetes installed version
+  command: kubeadm version -o short
+  register: kubernetes__r_installed_version
+  check_mode: no
+  changed_when: no
+
 - name: Specify node IP for kubelet in multi-interface hosts
   template:
     dest: /etc/sysconfig/kubelet
@@ -40,6 +46,9 @@
     name: kubelet
     state: started
     enabled: true
+
+- name: Bootstrap kubernetes with kubeadm
+  import_tasks: kubeadm.yml
 
 - name: Install completion scripts
   import_tasks: completion.yml
