@@ -1,4 +1,10 @@
 ---
+- name: Configure KUBECONFIG in bash_profile
+  lineinfile:
+    path: ~/.bash_profile
+    regexp: 'KUBECONFIG'
+    line: 'export KUBECONFIG=/etc/kubernetes/admin.conf'
+
 - name: Configure kubeadm
   template:
     dest: /etc/kubernetes/kubeadm.yaml

@@ -1,10 +1,4 @@
 ---
-- name: Create directory for completion scripts
-  file:
-    path: ~/.kube
-    state: directory
-    mode: '0750'
-
 # Note: `creates` ensures scripts are re-generated if kubernetes is reinstalled
 - name: Generate completion scripts
   shell:

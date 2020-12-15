@@ -1,4 +1,10 @@
 ---
+- name: Create directory for kubernetes root's config
+  file:
+    path: ~/.kube
+    state: directory
+    mode: '0750'
+
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic
   sysctl:
@@ -27,6 +33,9 @@
     allow_downgrade: yes
   register: kubernetes__r_install
 
+- name: Install completion scripts
+  import_tasks: completion.yml
+
 - name: Find kubernetes installed version
   command: kubeadm version -o short
   register: kubernetes__r_installed_version
@@ -49,6 +58,3 @@
 
 - name: Bootstrap kubernetes with kubeadm
   import_tasks: kubeadm.yml
-
-- name: Install completion scripts
-  import_tasks: completion.yml
