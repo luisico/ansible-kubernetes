@@ -1,0 +1,38 @@
+global
+  log /dev/log local0
+  log /dev/log local1 notice
+  daemon
+  ssl-default-server-options force-tlsv12
+  ssl-default-bind-options force-tlsv12
+
+defaults
+  mode http
+  log global
+  option httplog
+  option dontlognull
+  option http-server-close
+  option forwardfor except 127.0.0.0/8
+  option redispatch
+  retries 1
+  timeout http-request 10s
+  timeout queue 20s
+  timeout connect 5s
+  timeout client 20s
+  timeout server 20s
+  timeout http-keep-alive 10s
+  timeout check 10s
+
+frontend apiserver
+  bind *:{{ kubernetes_apiserver_port }}
+  mode tcp
+  option tcplog
+  default_backend apiserver
+
+backend apiserver
+  option httpchk GET /healthz
+  http-check expect status 200
+  mode tcp
+  balance roundrobin
+{% for host in kubernetes_peers %}
+  server {{ host }} {{ hostvars[host]['ansible_' + kubernetes_interface].ipv4.address }}:6443 check check-ssl verify none
+{% endfor %}

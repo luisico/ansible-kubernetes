@@ -1,0 +1,24 @@
+---
+- name: Create directories
+  file: path='/etc/{{ item }}' state=directory
+  loop:
+    - haproxy
+    - keepalived
+
+- name: Create haproxy config
+  template: dest='/etc/haproxy/haproxy.cfg' src='haproxy.cfg.j2'
+
+- name: Create keepalived check script
+  copy: dest='/etc/keepalived/check_apiserver.sh' src='check_apiserver.sh' mode='0755'
+
+- name: Create keepalived config
+  template: dest='/etc/keepalived/keepalived.conf' src='keepalived.conf.j2'
+
+- name: Create manifests directory
+  file: path='/etc/kubernetes/manifests' state=directory
+
+- name: Create haproxy and keepalived manifests
+  template: dest='/etc/kubernetes/manifests/{{ item }}.yaml' src='{{ item }}.yaml.j2' mode='0600'
+  loop:
+    - haproxy
+    - keepalived

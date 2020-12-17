@@ -11,6 +11,9 @@
   stat: path=/etc/kubernetes/admin.conf
   register: kubernetes__r_initialized
 
+- name: Setup load balancer
+  include_tasks: load-balancer.yml
+
 - include_tasks: kubeadm-init.yml
   when: not kubernetes__r_initialized.stat.exists
 

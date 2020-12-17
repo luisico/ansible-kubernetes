@@ -17,3 +17,12 @@ kubernetes_certificate_key:
 
 # Calico version
 kubernetes_calico_version: 3.14
+
+# Load balancer
+kubernetes_haproxy_image: haproxy:2.1.7-alpine
+kubernetes_keepalived_image: osixia/keepalived:2.0.20
+kubernetes_keepalived_pass:
+kubernetes_keepalived_id: 51
+kubernetes_keepalived_is_master: false
+kubernetes_peers:
+  - '{{ ansible_fqdn }}'
