@@ -13,3 +13,5 @@
 
 - include_tasks: kubeadm-init.yml
   when: not kubernetes__r_initialized.stat.exists
+
+- include_tasks: calico.yml
