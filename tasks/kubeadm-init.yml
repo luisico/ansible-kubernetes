@@ -1,10 +1,4 @@
 ---
-- name: Configure KUBECONFIG in bash_profile
-  lineinfile:
-    path: ~/.bash_profile
-    regexp: 'KUBECONFIG'
-    line: 'export KUBECONFIG=/etc/kubernetes/admin.conf'
-
 - name: Kubeadm init pre-check
   # TODO: ignore errors only in vagrant
   command: >

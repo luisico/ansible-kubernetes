@@ -1,4 +1,12 @@
 ---
+- name: Link kubeconfig in root's home
+  file:
+    dest: ~/.kube/config
+    src: /etc/kubernetes/admin.conf
+    state: link
+    mode: '0400'
+    force: true
+
 - name: Configure kubeadm
   template:
     dest: /etc/kubernetes/kubeadm.yaml
