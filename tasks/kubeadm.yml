@@ -6,6 +6,7 @@
     state: link
     mode: '0400'
     force: true
+  when: kubernetes_role == 'manager'
 
 - name: Configure kubeadm
   template:
@@ -18,13 +19,16 @@
 - name: Check if control-plane is already initialized
   stat: path=/etc/kubernetes/admin.conf
   register: kubernetes__r_initialized
+  when: kubernetes_role == 'manager'
 
 - name: Setup load balancer
   include_tasks: load-balancer.yml
+  when: kubernetes_role == 'manager'
 
 - name: Initialize cluster
   include_tasks: kubeadm-init.yml
   when:
+    - kubernetes_role == 'manager'
     - kubernetes_task == 'init'
     - not kubernetes__r_initialized.stat.exists
 

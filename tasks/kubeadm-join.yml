@@ -8,24 +8,27 @@
 
 - debug: msg='{{ kubernetes__r_precheck.stdout_lines + kubernetes__r_precheck.stderr_lines }}'
 
-- name: Configure control plane (managers only)
-  command: >
-    kubeadm join phase control-plane-prepare all --config /etc/kubernetes/kubeadm.yaml
-  args:
-    creates: /etc/kubernetes/manifests/kube-controller-manager.yaml
-  register: kubernetes__r_control_plane
+- block:
+  - name: Configure control plane (managers only)
+    command: >
+      kubeadm join phase control-plane-prepare all --config /etc/kubernetes/kubeadm.yaml
+    args:
+      creates: /etc/kubernetes/manifests/kube-controller-manager.yaml
+    register: kubernetes__r_control_plane
 
-- debug: msg='{{ kubernetes__r_control_plane.stdout_lines + kubernetes__r_control_plane.stderr_lines }}'
-  when: kubernetes__r_control_plane.changed
+  - debug: msg='{{ kubernetes__r_control_plane.stdout_lines + kubernetes__r_control_plane.stderr_lines }}'
+    when: kubernetes__r_control_plane.changed
 
-- name: Expose control manager and scheduler metrics to prometheus (managers only)
-  replace:
-    path: '/etc/kubernetes/manifests/kube-{{ item }}.yaml'
-    regexp: '127\.0\.0\.1'
-    replace: '{{ kubernetes_address }}'
-  loop:
-    - controller-manager
-    - scheduler
+  - name: Expose control manager and scheduler metrics to prometheus (managers only)
+    replace:
+      path: '/etc/kubernetes/manifests/kube-{{ item }}.yaml'
+      regexp: '127\.0\.0\.1'
+      replace: '{{ kubernetes_address }}'
+    loop:
+      - controller-manager
+      - scheduler
+
+  when: kubernetes_role == 'manager'
 
 - name: Join cluster
   command: >
