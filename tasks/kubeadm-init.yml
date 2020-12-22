@@ -32,3 +32,6 @@
   register: kubernetes__r_init
 
 - debug: msg='{{ kubernetes__r_init.stdout_lines + kubernetes__r_init.stderr_lines }}'
+
+- name: Initialize CNI
+  include_tasks: calico.yml

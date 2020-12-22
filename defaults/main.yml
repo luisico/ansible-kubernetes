@@ -2,6 +2,9 @@
 # Kubernetes version
 kubernetes_version: 1.19.*
 
+# Kubeadm task (init, join)
+kubernetes_task:
+
 # Kubernetes interface
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
 

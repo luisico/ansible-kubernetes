@@ -10,7 +10,7 @@
 - name: Configure kubeadm
   template:
     dest: /etc/kubernetes/kubeadm.yaml
-    src: kubeadm.yaml.j2
+    src: 'kubeadm-{{ kubernetes_task }}.yaml.j2'
     mode: '0600'
     owner: root
     group: root
@@ -22,7 +22,8 @@
 - name: Setup load balancer
   include_tasks: load-balancer.yml
 
-- include_tasks: kubeadm-init.yml
-  when: not kubernetes__r_initialized.stat.exists
-
-- include_tasks: calico.yml
+- name: Initialize cluster
+  include_tasks: kubeadm-init.yml
+  when:
+    - kubernetes_task == 'init'
+    - not kubernetes__r_initialized.stat.exists

@@ -9,7 +9,6 @@ networking:
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
-# TODO: enp0s8 might not be the interface outside vagrant
 localAPIEndpoint:
-  advertiseAddress: {{ ansible_enp0s8.ipv4.address }}
+  advertiseAddress: {{ kubernetes_address }}
 certificateKey: {{ kubernetes_certificate_key }}
