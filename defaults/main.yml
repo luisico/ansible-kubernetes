@@ -18,6 +18,10 @@ kubernetes_pod_cidr: 10.1.0.0/16
 # Certificate key
 kubernetes_certificate_key:
 
+# Discovery bootstrap
+kubernetes_discovery_token:
+kubernetes_discovery_hash:
+
 # Calico version
 kubernetes_calico_version: 3.14
 

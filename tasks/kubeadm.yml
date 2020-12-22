@@ -27,3 +27,11 @@
   when:
     - kubernetes_task == 'init'
     - not kubernetes__r_initialized.stat.exists
+
+- name: Bootstrap discovery
+  include_tasks: discovery.yml
+  when: kubernetes_task == 'init'
+
+- name: Join nodes to cluster
+  include_tasks: kubeadm-join.yml
+  when: kubernetes_task == 'join'

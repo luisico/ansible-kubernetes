@@ -1,0 +1,13 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: JoinConfiguration
+controlPlane:
+  localAPIEndpoint:
+    advertiseAddress: {{ kubernetes_address }}
+  certificateKey: {{ kubernetes_certificate_key }}
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: {{ kubernetes_apiserver_vip }}:{{ kubernetes_apiserver_port }}
+    caCertHashes:
+      - sha256:{{ kubernetes_discovery_hash }}
+    token: {{ kubernetes_discovery_token }}
