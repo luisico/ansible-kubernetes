@@ -8,6 +8,7 @@
   shell: >
     openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
   register: kubernetes__r_hash
+  changed_when: no
 
 - name: Save discovery token and hash
   set_fact:
