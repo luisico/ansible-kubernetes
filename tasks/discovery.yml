@@ -1,8 +1,15 @@
 ---
-- name: Create short-lived join token
-  command: >
+- name: Get list of available join tokens
+  shell: >
+    kubeadm token list -o json | jq -rs '. | map(select(.description=="Ansible kubernetes bootstrap")) | sort_by(.expires) | last | .token'
+  register: kubernetes__r_existing_token
+  changed_when: no
+
+- name: Create short-lived join token if none is available
+  shell: >
     kubeadm token create --ttl 1h --description 'Ansible kubernetes bootstrap'
   register: kubernetes__r_token
+  when: kubernetes__r_existing_token.stdout == 'null'
 
 - name: Get discovery ca cert hash
   shell: >
@@ -10,7 +17,7 @@
   register: kubernetes__r_hash
   changed_when: no
 
-- name: Save discovery token and hash
+- name: Save discovery token and hash as facts
   set_fact:
-    kubernetes_discovery_token: '{{ kubernetes__r_token.stdout }}'
+    kubernetes_discovery_token: '{{ kubernetes__r_token.stdout if kubernetes__r_existing_token.stdout == "null" else kubernetes__r_existing_token.stdout }}'
     kubernetes_discovery_hash: '{{ kubernetes__r_hash.stdout }}'
