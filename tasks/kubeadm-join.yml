@@ -1,7 +1,18 @@
 ---
+- name: Get discovery token and hash
+  include_tasks: discovery.yml
+
+- name: Configure kubeadm
+  template:
+    dest: /etc/kubernetes/kubeadm.yaml
+    src: 'kubeadm-join.yaml.j2'
+    mode: '0600'
+    owner: root
+    group: root
+
 - name: kubeadm join pre-check
   command: >
-    kubeadm join phase preflight --config /etc/kubernetes/kubeadm.yaml --ignore-preflight-errors=NumCPU,DirAvailable--etc-kubernetes-manifests,FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml,FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml,FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml
+    kubeadm join phase preflight --config /etc/kubernetes/kubeadm.yaml --ignore-preflight-errors=NumCPU,DirAvailable--etc-kubernetes-manifests,FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml,FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml,FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml,FileAvailable--etc-kubernetes-kubelet.conf,FileAvailable--etc-kubernetes-pki-ca.crt
   check_mode: no
   changed_when: no
   register: kubernetes__r_precheck

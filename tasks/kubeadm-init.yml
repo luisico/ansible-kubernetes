@@ -1,4 +1,12 @@
 ---
+- name: Configure kubeadm
+  template:
+    dest: /etc/kubernetes/kubeadm.yaml
+    src: 'kubeadm-init.yaml.j2'
+    mode: '0600'
+    owner: root
+    group: root
+
 - name: Kubeadm init pre-check
   # TODO: ignore errors only in vagrant
   command: >

@@ -8,34 +8,29 @@
     force: true
   when: kubernetes_role == 'manager'
 
-- name: Configure kubeadm
-  template:
-    dest: /etc/kubernetes/kubeadm.yaml
-    src: 'kubeadm-{{ kubernetes_task }}.yaml.j2'
-    mode: '0600'
-    owner: root
-    group: root
-
-- name: Check if control-plane is already initialized
-  stat: path=/etc/kubernetes/admin.conf
-  register: kubernetes__r_initialized
-  when: kubernetes_role == 'manager'
-
-- name: Setup load balancer
+- name: Setup load balancer for apiservers
   include_tasks: load-balancer.yml
   when: kubernetes_role == 'manager'
 
-- name: Initialize cluster
+- name: Check if node has already joined the cluster
+  command: >
+    kubectl get nodes -o custom-columns=NAME:.metadata.name --no-headers
+  delegate_to: '{{ kubernetes_leader }}'
+  check_mode: no
+  changed_when: inventory_hostname not in kubernetes__r_joined.stdout_lines
+  failed_when:
+    - kubernetes__r_joined.rc > 0
+    - not (kubernetes_task == 'init' and '"The connection to the server localhost:8080 was refused" not in kubernetes__r_joined.stderr')
+  register: kubernetes__r_joined
+
+- name: Initialize cluster with first node
   include_tasks: kubeadm-init.yml
   when:
-    - kubernetes_role == 'manager'
     - kubernetes_task == 'init'
-    - not kubernetes__r_initialized.stat.exists
+    - kubernetes__r_joined.changed
 
-- name: Bootstrap discovery
-  include_tasks: discovery.yml
-  when: kubernetes_task == 'init'
-
-- name: Join nodes to cluster
+- name: Join other nodes to cluster
   include_tasks: kubeadm-join.yml
-  when: kubernetes_task == 'join'
+  when:
+    - kubernetes_task == 'join'
+    - kubernetes__r_joined.changed

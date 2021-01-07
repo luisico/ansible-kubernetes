@@ -4,18 +4,21 @@
     kubeadm token list -o json | jq -rs '. | map(select(.description=="Ansible kubernetes bootstrap")) | sort_by(.expires) | last | .token'
   register: kubernetes__r_existing_token
   changed_when: no
+  delegate_to: '{{ kubernetes_leader }}'
 
 - name: Create short-lived join token if none is available
   shell: >
-    kubeadm token create --ttl 1h --description 'Ansible kubernetes bootstrap'
+    kubeadm token create --ttl 15m --description 'Ansible kubernetes bootstrap'
   register: kubernetes__r_token
   when: kubernetes__r_existing_token.stdout == 'null'
+  delegate_to: '{{ kubernetes_leader }}'
 
 - name: Get discovery ca cert hash
   shell: >
     openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
   register: kubernetes__r_hash
   changed_when: no
+  delegate_to: '{{ kubernetes_leader }}'
 
 - name: Save discovery token and hash as facts
   set_fact:

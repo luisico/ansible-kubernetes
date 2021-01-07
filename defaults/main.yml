@@ -8,6 +8,11 @@ kubernetes_task:
 # Kubernetes role (manager, worker)
 kubernetes_role: worker
 
+# Kubernetes leader
+# Delegate apiserver queries to this node
+# Overwrite with a manager node when invoking `kubernetes_task: join`
+kubernetes_leader: '{{ inventory_hostname }}'
+
 # Kubernetes interface
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
 
