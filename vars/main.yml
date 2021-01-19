@@ -13,3 +13,8 @@ kubernetes_packages:
 
 # IP address from interface name
 kubernetes_address: "{{ hostvars[inventory_hostname]['ansible_' + kubernetes_interface].ipv4.address }}"
+
+# Extra SANs for apiserver:
+kubernetes_apiserver_sans:
+  - '{{ kubernetes_public_name }}'
+  - '{{ kubernetes_public_vip }}'

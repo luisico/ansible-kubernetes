@@ -5,6 +5,13 @@ kubernetesVersion: {{ kubernetes__r_installed_version.stdout }}
 controlPlaneEndpoint: {{ kubernetes_apiserver_vip }}:{{ kubernetes_apiserver_port }}
 networking:
   podSubnet: {{ kubernetes_pod_cidr }}
+{% if kubernetes_apiserver_sans | select() | list != [] %}
+apiServer:
+  certSANs:
+{% for san in kubernetes_apiserver_sans | select() | list %}
+    - {{ san }}
+{% endfor %}
+{% endif %}
 
 ---
 apiVersion: kubeadm.k8s.io/v1beta2

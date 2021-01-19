@@ -28,9 +28,9 @@ vrrp_instance k8s_cp {
     {{ kubernetes_apiserver_vip }}/24 dev {{ kubernetes_interface }}
   }
 
-{% if kubernetes_apiserver_public_vip and kubernetes_apiserver_public_interface %}
+{% if kubernetes_public_vip and kubernetes_public_interface %}
   virtual_ipaddress_excluded {
-    {{ kubernetes_apiserver_public_vip }}/24 dev {{ kubernetes_apiserver_public_interface }}
+    {{ kubernetes_public_vip }}/24 dev {{ kubernetes_public_interface }}
   }
 {% endif %}
 
