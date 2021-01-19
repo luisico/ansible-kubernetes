@@ -49,8 +49,10 @@
     owner: root
     group: root
     mode: '0644'
+  notify: Restart kubelet
 
 - name: Enable kubelet service
+  # TODO: will fail until /var/lib/kubelet/config.yaml is put in place by kubeadm
   systemd:
     name: kubelet
     state: started
