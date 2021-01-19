@@ -4,7 +4,7 @@ global_defs {
 }
 
 vrrp_script check_apiserver {
-  script "/container/service/keepalived/assets/check_apiserver.sh {{ kubernetes_apiserver_vip }} {{ kubernetes_apiserver_port }}"
+  script "/usr/local/etc/keepalived/check_apiserver.sh {{ kubernetes_apiserver_vip }} {{ kubernetes_apiserver_port }}"
   interval 3
   weight -2
   fall 1
