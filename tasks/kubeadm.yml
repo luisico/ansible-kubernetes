@@ -8,10 +8,6 @@
     force: true
   when: kubernetes_role == 'manager'
 
-- name: Setup load balancer for apiservers
-  include_tasks: load-balancer.yml
-  when: kubernetes_role == 'manager'
-
 - name: Check if node has already joined the cluster
   command: >
     kubectl get nodes -o custom-columns=NAME:.metadata.name --no-headers

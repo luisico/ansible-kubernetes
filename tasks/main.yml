@@ -56,5 +56,9 @@
     state: started
     enabled: true
 
+- name: Setup load balancer for apiservers as kubelet manifests
+  include_tasks: load-balancer.yml
+  when: kubernetes_role == 'manager'
+
 - name: Bootstrap kubernetes with kubeadm
   import_tasks: kubeadm.yml
