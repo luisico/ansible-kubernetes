@@ -23,6 +23,10 @@ kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
 kubernetes_apiserver_vip: '{{ ansible_default_ipv4.address }}'
 kubernetes_apiserver_port: 6443
 
+# Public access for API server
+kubernetes_apiserver_public_vip:
+kubernetes_apiserver_public_interface:
+
 # Pod network cidr
 kubernetes_pod_cidr: 10.1.0.0/16
 

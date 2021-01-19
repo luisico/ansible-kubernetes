@@ -26,8 +26,14 @@ vrrp_instance VI_1 {
   }
 
   virtual_ipaddress {
-    {{ kubernetes_apiserver_vip }}/24
+    {{ kubernetes_apiserver_vip }}/24 dev {{ kubernetes_interface }}
   }
+
+{% if kubernetes_apiserver_public_vip and kubernetes_apiserver_public_interface %}
+  virtual_ipaddress_excluded {
+    {{ kubernetes_apiserver_public_vip }}/24 dev {{ kubernetes_apiserver_public_interface }}
+  }
+{% endif %}
 
   authentication {
     auth_type PASS
