@@ -1,5 +1,5 @@
 global_defs {
-  router_id LVS_DEVEL
+  router_id k8s
   default_interface {{ kubernetes_interface }}
 }
 
@@ -11,7 +11,7 @@ vrrp_script check_apiserver {
   rise 1
 }
 
-vrrp_instance VI_1 {
+vrrp_instance k8s_cp {
   interface {{ kubernetes_interface }}
 
   virtual_router_id {{ kubernetes_keepalived_id }}
