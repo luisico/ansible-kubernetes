@@ -16,8 +16,10 @@
   check_mode: no
   changed_when: no
   register: kubernetes__r_precheck
+  when: kubernetes_precheck
 
 - debug: msg='{{ kubernetes__r_precheck.stdout_lines + kubernetes__r_precheck.stderr_lines }}'
+  when: kubernetes_precheck
 
 - block:
   - name: Configure control plane (managers only)

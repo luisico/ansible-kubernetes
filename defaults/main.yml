@@ -2,6 +2,9 @@
 # Kubernetes version
 kubernetes_version: 1.19.*
 
+# Run kubeadm precheck
+kubernetes_precheck: yes
+
 # Kubeadm task (init, join)
 kubernetes_task:
 
