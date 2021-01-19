@@ -1,5 +1,7 @@
 global_defs {
   router_id k8s
+  script_user nobody
+  enable_script_security
 }
 
 vrrp_script check_apiserver {
