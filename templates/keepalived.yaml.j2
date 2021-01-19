@@ -4,6 +4,9 @@ metadata:
   creationTimestamp: null
   name: keepalived
   namespace: kube-system
+  labels:
+    component: keepalived
+    tier: control-plane
 spec:
   containers:
   - image: {{ kubernetes_keepalived_image }}
