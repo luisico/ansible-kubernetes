@@ -43,6 +43,12 @@ vrrp_instance k8s_cp {
 
   notify /container/service/keepalived/assets/notify.sh
 
+{% if kubernetes_public_vip and kubernetes_public_interface %}
+  track_interface {
+    {{ kubernetes_public_interface }}
+  }
+{% endif %}
+
   track_script {
     check_apiserver
   }
