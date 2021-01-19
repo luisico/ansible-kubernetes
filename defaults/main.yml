@@ -16,7 +16,7 @@ kubernetes_role: worker
 # Overwrite with a manager node when invoking `kubernetes_task: join`
 kubernetes_leader: '{{ inventory_hostname }}'
 
-# Kubernetes interface
+# Main interface for cluster communication
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
 
 # API servers
