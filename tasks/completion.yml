@@ -1,8 +1,8 @@
 ---
 # Note: `creates` ensures scripts are re-generated if kubernetes is reinstalled
 - name: Generate completion scripts
-  shell:
-    cmd: '{{ item }} completion bash > ~/.kube/{{ item }}_completion.bash.inc'
+  shell: '{{ item }} completion bash > ~/.kube/{{ item }}_completion.bash.inc'
+  args:
     creates: '~/.kube/{{ item }}_completion.bash.inc{{ "" if not kubernetes__r_install.changed else ".force" }}'
   loop:
     - kubectl

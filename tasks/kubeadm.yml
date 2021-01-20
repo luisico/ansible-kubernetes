@@ -4,13 +4,12 @@
     dest: ~/.kube/config
     src: /etc/kubernetes/admin.conf
     state: link
-    mode: '0400'
+    mode: 0400
     force: true
   when: kubernetes_role == 'manager'
 
 - name: Check if node has already joined the cluster
-  command: >
-    kubectl get nodes -o custom-columns=NAME:.metadata.name --no-headers
+  command: kubectl get nodes -o custom-columns=NAME:.metadata.name --no-headers
   delegate_to: '{{ kubernetes_leader }}'
   check_mode: no
   changed_when: inventory_hostname not in kubernetes__r_joined.stdout_lines

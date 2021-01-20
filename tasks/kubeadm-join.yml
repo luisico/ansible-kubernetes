@@ -6,13 +6,14 @@
   template:
     dest: /etc/kubernetes/kubeadm.yaml
     src: 'kubeadm-join.yaml.j2'
-    mode: '0600'
+    mode: 0600
     owner: root
     group: root
 
 - name: kubeadm join pre-check
-  command: >
-    kubeadm join phase preflight --config /etc/kubernetes/kubeadm.yaml --ignore-preflight-errors=NumCPU,DirAvailable--etc-kubernetes-manifests,FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml,FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml,FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml,FileAvailable--etc-kubernetes-kubelet.conf,FileAvailable--etc-kubernetes-pki-ca.crt
+  command: >-
+    kubeadm join phase preflight --config /etc/kubernetes/kubeadm.yaml
+    --ignore-preflight-errors={{ kubernetes_kubeadm_join_ignore_errors | join(",") }}
   check_mode: no
   changed_when: no
   register: kubernetes__r_precheck
@@ -23,14 +24,12 @@
 
 - block:
   - name: Configure control plane (managers only)
-    command: >
-      kubeadm join phase control-plane-prepare all --config /etc/kubernetes/kubeadm.yaml
+    command: kubeadm join phase control-plane-prepare all --config /etc/kubernetes/kubeadm.yaml
     args:
       creates: /etc/kubernetes/manifests/kube-controller-manager.yaml
     register: kubernetes__r_control_plane
 
   - debug: msg='{{ kubernetes__r_control_plane.stdout_lines + kubernetes__r_control_plane.stderr_lines }}'
-    when: kubernetes__r_control_plane.changed
 
   - name: Expose control manager and scheduler metrics to prometheus (managers only)
     replace:
@@ -43,9 +42,8 @@
 
   when: kubernetes_role == 'manager'
 
-- name: Join cluster
-  command: >
-    kubeadm join --config /etc/kubernetes/kubeadm.yaml --skip-phases=preflight,control-plane-prepare
+- name: Join cluster          # noqa 301
+  command: kubeadm join --config /etc/kubernetes/kubeadm.yaml --skip-phases=preflight,control-plane-prepare
   register: kubernetes__r_join
 
 - debug: msg='{{ kubernetes__r_join.stdout_lines + kubernetes__r_join.stderr_lines }}'

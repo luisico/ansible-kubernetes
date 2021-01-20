@@ -45,6 +45,7 @@ TODO
 - Autogenerate kubernetes_keepalived_pass if not present
 - Restart kubelet if keepalive/haproxy configs change?
 - Having token and hash in kubeadm-join.yaml config might not be safe
+- Revisit kubeadm preflight errors to ignore in vagrant vs production
 
 License
 -------

@@ -3,7 +3,7 @@
   file:
     path: ~/.kube
     state: directory
-    mode: '0750'
+    mode: 0750
 
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic
@@ -48,11 +48,11 @@
     src: kubelet.j2
     owner: root
     group: root
-    mode: '0644'
+    mode: 0644
   notify: Restart kubelet
 
 - name: Enable kubelet service
-  # TODO: will fail until /var/lib/kubelet/config.yaml is put in place by kubeadm
+  # Note: kubelet will fail until /var/lib/kubelet/config.yaml is put in place by kubeadm init/join
   systemd:
     name: kubelet
     state: started
