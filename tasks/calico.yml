@@ -1,18 +1,46 @@
 ---
-- name: Install Calico from manifests
+- name: Install Tigera Calico operator
   command: |
-    kubectl apply -f https://docs.projectcalico.org/v{{ kubernetes_calico_version }}/manifests/calico.yaml {{ "--dry-run=server" if ansible_check_mode }}
+    kubectl apply -f https://docs.projectcalico.org/archive/v{{ kubernetes_calico_version }}/manifests/tigera-operator.yaml {{ "--dry-run=server" if ansible_check_mode }}
+  changed_when: "'created' in kubernetes__r_tigera.stdout"
+  check_mode: no
+  register: kubernetes__r_tigera
+
+- debug: msg='{{ kubernetes__r_tigera.stdout_lines + kubernetes__r_tigera.stderr_lines }}'
+  when: kubernetes__r_tigera.changed
+
+- name: Wait for Tigera Calico operator readiness
+  command: kubectl wait -n tigera-operator --for=condition=Available deployment/tigera-operator
+  changed_when: no
+  register: kubernetes__r_wait
+  until: "'condition met' in kubernetes__r_wait.stdout"
+  when: kubernetes__r_tigera.changed
+
+- name: Generate Calico CRD
+  template:
+    dest: /etc/kubernetes/calico.yaml
+    src: calico.yaml.j2
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Install Calico from CRD
+  command: |
+    kubectl apply -f /etc/kubernetes/calico.yaml {{ "--dry-run=server" if ansible_check_mode }}
   changed_when: "'created' in kubernetes__r_calico.stdout"
   check_mode: no
   register: kubernetes__r_calico
 
 - debug: msg='{{ kubernetes__r_calico.stdout_lines + kubernetes__r_calico.stderr_lines }}'
+  when: kubernetes__r_calico.changed
 
 - name: Wait for Calico readiness
-  command: kubectl wait -n kube-system --for=condition=Ready pod -l {{ item }}
+  command: kubectl wait -n calico-system --for=condition=Ready pod -l {{ item }}
   changed_when: no
   register: kubernetes__r_wait
   until: "'condition met' in kubernetes__r_wait.stdout"
   loop:
     - k8s-app=calico-kube-controllers
     - k8s-app=calico-node
+    - k8s-app=calico-typha
+  when: kubernetes__r_calico.changed
