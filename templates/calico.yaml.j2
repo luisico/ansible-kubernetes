@@ -4,6 +4,7 @@ metadata:
   name: default
 spec:
   calicoNetwork:
+    bgp: Disabled
     ipPools:
     - blockSize: 26
       cidr: {{ kubernetes_pod_cidr }}
