@@ -30,6 +30,7 @@
     register: kubernetes__r_control_plane
 
   - debug: msg='{{ kubernetes__r_control_plane.stdout_lines + kubernetes__r_control_plane.stderr_lines }}'
+    when: kubernetes__r_control_plane.changed
 
   - name: Expose control manager and scheduler metrics to prometheus (managers only)
     replace:
