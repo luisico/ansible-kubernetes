@@ -1,4 +1,10 @@
 ---
+- name: Create directory for kubernetes root's config
+  file:
+    path: /etc/kubernetes
+    state: directory
+    mode: 0750
+
 - name: Link kubeconfig in root's home
   file:
     dest: ~/.kube/config
