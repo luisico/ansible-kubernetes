@@ -14,3 +14,5 @@ spec:
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
+  controlPlaneNodeSelector:
+    node-role.kubernetes.io/master: ''
