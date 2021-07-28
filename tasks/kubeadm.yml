@@ -24,6 +24,13 @@
     - kubernetes_task == 'init'
     - kubernetes__r_joined.changed
 
+- name: Prevent NetworkManager from interfering with Calico
+  copy:
+    dest: /etc/NetworkManager/conf.d/calico.conf
+    content: |
+      [keyfile]
+      unmanaged-devices=interface-name:cali*;interface-name:tunl*;interface-name:vxlan.calico
+
 - name: Install calicoctl
   get_url:
     url: https://github.com/projectcalico/calicoctl/releases/download/v{{ kubernetes_calicoctl_version }}/calicoctl
