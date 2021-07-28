@@ -24,6 +24,15 @@
     - kubernetes_task == 'init'
     - kubernetes__r_joined.changed
 
+- name: Install calicoctl
+  get_url:
+    url: https://github.com/projectcalico/calicoctl/releases/download/v{{ kubernetes_calicoctl_version }}/calicoctl
+    dest: /usr/bin/calicoctl
+    owner: root
+    group: root
+    mode: 0750
+  when: kubernetes_role == 'manager'
+
 - name: Initialize CNI
   include_tasks: calico.yml
   when:
