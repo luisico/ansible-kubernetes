@@ -6,6 +6,8 @@ spec:
   registry: quay.io
   calicoNetwork:
     bgp: Disabled
+    nodeAddressAutodetectionV4:
+      interface: {{ kubernetes_interface }}
     ipPools:
     - blockSize: 26
       cidr: {{ kubernetes_pod_cidr }}
