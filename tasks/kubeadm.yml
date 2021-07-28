@@ -24,6 +24,11 @@
     - kubernetes_task == 'init'
     - kubernetes__r_joined.changed
 
+- name: Initialize CNI
+  include_tasks: calico.yml
+  when:
+    - kubernetes_task == 'init'
+
 - name: Join other nodes to cluster
   include_tasks: kubeadm-join.yml
   when:
