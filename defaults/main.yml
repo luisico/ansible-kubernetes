@@ -20,8 +20,9 @@ kubernetes_leader: '{{ inventory_hostname }}'
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
 
 # API servers
-kubernetes_apiserver_vip: '{{ ansible_default_ipv4.address }}'
 kubernetes_apiserver_port: 6443
+kubernetes_apiserver_vip_port: 6444
+kubernetes_apiserver_vip: '{{ ansible_default_ipv4.address }}'
 
 # Public access for API server
 kubernetes_public_name:

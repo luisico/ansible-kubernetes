@@ -23,7 +23,7 @@ defaults
   timeout check 10s
 
 frontend apiserver
-  bind *:{{ kubernetes_apiserver_port }}
+  bind *:{{ kubernetes_apiserver_vip_port }}
   mode tcp
   option tcplog
   default_backend apiserver
@@ -34,5 +34,5 @@ backend apiserver
   mode tcp
   balance roundrobin
 {% for host in kubernetes_peers %}
-  server {{ host }} {{ hostvars[host]['ansible_' + kubernetes_interface].ipv4.address }}:6443 check check-ssl verify none
+  server {{ host }} {{ hostvars[host]['ansible_' + kubernetes_interface].ipv4.address }}:{{ kubernetes_apiserver_port }} check check-ssl verify none
 {% endfor %}

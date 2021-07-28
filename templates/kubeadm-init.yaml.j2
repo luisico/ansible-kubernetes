@@ -2,7 +2,7 @@
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
 kubernetesVersion: {{ kubernetes__r_installed_version.stdout }}
-controlPlaneEndpoint: {{ kubernetes_apiserver_vip }}:{{ kubernetes_apiserver_port }}
+controlPlaneEndpoint: {{ kubernetes_apiserver_vip }}:{{ kubernetes_apiserver_vip_port }}
 networking:
   podSubnet: {{ kubernetes_pod_cidr }}
 {% if kubernetes_apiserver_sans | select() | list != [] %}

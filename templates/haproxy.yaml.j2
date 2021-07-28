@@ -15,7 +15,7 @@ spec:
       httpGet:
         host: localhost
         path: /healthz
-        port: {{ kubernetes_apiserver_port }}
+        port: {{ kubernetes_apiserver_vip_port }}
         scheme: HTTPS
     volumeMounts:
     - mountPath: /usr/local/etc/haproxy/haproxy.cfg
