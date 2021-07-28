@@ -39,6 +39,7 @@
   changed_when: no
   register: kubernetes__r_wait
   until: "'condition met' in kubernetes__r_wait.stdout"
+  retries: 6
   loop:
     - k8s-app=calico-kube-controllers
     - k8s-app=calico-node
