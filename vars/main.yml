@@ -17,7 +17,7 @@ kubernetes_address: "{{ hostvars[inventory_hostname]['ansible_' + kubernetes_int
 # Extra SANs for apiserver:
 kubernetes_apiserver_sans:
   - '{{ kubernetes_public_name }}'
-  - '{{ kubernetes_public_vip }}'
+  - '{{ kubernetes_public_vip_cidr | ipaddr("address") }}'
 
 # Ignore some kubeadm preflight errors
 kubernetes_kubeadm_init_ignore_errors:

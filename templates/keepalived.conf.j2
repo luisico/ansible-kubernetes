@@ -5,7 +5,7 @@ global_defs {
 }
 
 vrrp_script check_apiserver {
-  script "/usr/local/etc/keepalived/check_apiserver.sh {{ kubernetes_apiserver_vip }} {{ kubernetes_apiserver_vip_port }}"
+  script "/usr/local/etc/keepalived/check_apiserver.sh {{ kubernetes_apiserver_vip_cidr | ipaddr("address") }} {{ kubernetes_apiserver_vip_port }}"
   interval 3
   weight -2
   fall 1
@@ -27,12 +27,12 @@ vrrp_instance k8s_cp {
   }
 
   virtual_ipaddress {
-    {{ kubernetes_apiserver_vip }}/24 dev {{ kubernetes_interface }}
+    {{ kubernetes_apiserver_vip_cidr }} dev {{ kubernetes_interface }}
   }
 
-{% if kubernetes_public_vip and kubernetes_public_interface %}
+{% if kubernetes_public_vip_cidr and kubernetes_public_interface %}
   virtual_ipaddress_excluded {
-    {{ kubernetes_public_vip }}/24 dev {{ kubernetes_public_interface }}
+    {{ kubernetes_public_vip_cidr }} dev {{ kubernetes_public_interface }}
   }
 {% endif %}
 
@@ -43,7 +43,7 @@ vrrp_instance k8s_cp {
 
   notify /container/service/keepalived/assets/notify.sh
 
-{% if kubernetes_public_vip and kubernetes_public_interface %}
+{% if kubernetes_public_vip_cidr and kubernetes_public_interface %}
   track_interface {
     {{ kubernetes_public_interface }}
   }
