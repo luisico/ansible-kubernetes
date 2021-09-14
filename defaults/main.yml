@@ -40,8 +40,8 @@ kubernetes_discovery_token:
 kubernetes_discovery_hash:
 
 # Calico version
-kubernetes_calico_version: 3.19
-kubernetes_calicoctl_version: 3.19.1
+kubernetes_calico_version: '3.19'
+kubernetes_calicoctl_version: '3.19.3'
 
 # Load balancer
 kubernetes_haproxy_image: haproxy:2.1.7-alpine
