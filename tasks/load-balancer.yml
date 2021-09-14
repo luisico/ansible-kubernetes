@@ -12,7 +12,7 @@
   template:
     dest: /etc/haproxy/haproxy.cfg
     src: haproxy.cfg.j2
-    mode: 0640
+    mode: 0644
 
 - name: Create keepalived check script
   copy:
