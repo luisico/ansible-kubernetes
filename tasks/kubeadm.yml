@@ -44,6 +44,7 @@
     owner: root
     group: root
     mode: 0750
+    force: yes
   when: kubernetes_role == 'manager'
 
 - name: Initialize CNI
