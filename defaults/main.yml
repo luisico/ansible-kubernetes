@@ -19,6 +19,10 @@ kubernetes_role: worker
 # Overwrite with a manager node when invoking `kubernetes_task: join`
 kubernetes_leader: '{{ inventory_hostname }}'
 
+# Container runtime
+# docker and containerd are supported by this role
+kubernetes_cri: containerd
+
 # Main interface for cluster communication
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
 
