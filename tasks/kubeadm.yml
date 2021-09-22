@@ -1,5 +1,5 @@
 ---
-- name: Create directory for kubernetes root's config
+- name: Create directory for kubernetes config
   file:
     path: /etc/kubernetes
     state: directory
