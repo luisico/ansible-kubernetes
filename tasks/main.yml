@@ -35,15 +35,6 @@
   check_mode: no
   changed_when: no
 
-- name: Specify node IP for kubelet in multi-interface hosts
-  template:
-    dest: /etc/sysconfig/kubelet
-    src: kubelet.j2
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart kubelet
-
 - name: Enable kubelet service
   # Note: kubelet will fail until /var/lib/kubelet/config.yaml is put in place by kubeadm init/join
   systemd:
