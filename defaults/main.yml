@@ -1,6 +1,6 @@
 ---
 # Kubernetes version
-kubernetes_version: 1.19.*
+kubernetes_version: 1.20.*
 
 # Cluster name
 kubernetes_cluster_name: kubernetes
