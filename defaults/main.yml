@@ -1,6 +1,6 @@
 ---
 # Kubernetes version
-kubernetes_version: 1.20.*
+kubernetes_version: 1.21.*
 
 # Cluster name
 kubernetes_cluster_name: kubernetes
@@ -19,9 +19,9 @@ kubernetes_role: worker
 # Overwrite with a manager node when invoking `kubernetes_task: join`
 kubernetes_leader: '{{ inventory_hostname }}'
 
-# Container runtime
-# docker and containerd are supported by this role
-kubernetes_cri: containerd
+# Cgroups driver
+# See https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/
+kubernetes_cgroup_driver: systemd
 
 # Main interface for cluster communication
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
