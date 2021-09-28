@@ -20,3 +20,10 @@ kind: InitConfiguration
 localAPIEndpoint:
   advertiseAddress: {{ kubernetes_address }}
 certificateKey: {{ kubernetes_certificate_key }}
+
+{% if kubernetes_cri == 'containerd' %}
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd
+{% endif %}

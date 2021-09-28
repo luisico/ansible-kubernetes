@@ -5,13 +5,6 @@
     state: directory
     mode: 0750
 
-# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
-- name: Let iptables see bridged traffic
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: '1'
-    sysctl_file: /etc/sysctl.d/50-kubernetes.conf
-
 - name: Add kubernetes repository
   yum_repository:
     name: kubernetes
