@@ -10,4 +10,4 @@ stages:
 ansible-lint:
   stage: ansible-lint
   script:
-    - ansible-lint .
+    - ansible-lint -x role-name .

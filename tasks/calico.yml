@@ -6,10 +6,11 @@
   check_mode: no
   register: kubernetes__r_tigera
 
-- debug: msg='{{ kubernetes__r_tigera.stdout_lines + kubernetes__r_tigera.stderr_lines }}'
+- name: Print result of installing Tigera operator    # noqa no-handler
+  debug: msg='{{ kubernetes__r_tigera.stdout_lines + kubernetes__r_tigera.stderr_lines }}'
   when: kubernetes__r_tigera.changed
 
-- name: Wait for Tigera Calico operator readiness
+- name: Wait for Tigera Calico operator readiness   # noqa no-handler
   command: kubectl wait -n tigera-operator --for=condition=Available deployment/tigera-operator
   changed_when: no
   register: kubernetes__r_wait
@@ -31,10 +32,11 @@
   check_mode: no
   register: kubernetes__r_calico
 
-- debug: msg='{{ kubernetes__r_calico.stdout_lines + kubernetes__r_calico.stderr_lines }}'
+- name: Print result of installing Calico   # noqa no-handler
+  debug: msg='{{ kubernetes__r_calico.stdout_lines + kubernetes__r_calico.stderr_lines }}'
   when: kubernetes__r_calico.changed
 
-- name: Wait for Calico readiness
+- name: Wait for Calico readiness   # noqa no-handler
   command: kubectl wait -n calico-system --for=condition=Ready pod -l {{ item }}
   changed_when: no
   register: kubernetes__r_wait

@@ -36,6 +36,9 @@
     content: |
       [keyfile]
       unmanaged-devices=interface-name:cali*;interface-name:tunl*;interface-name:vxlan.calico
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Install calicoctl
   get_url:
