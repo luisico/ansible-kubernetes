@@ -13,3 +13,6 @@ discovery:
     caCertHashes:
       - sha256:{{ kubernetes_discovery_hash }}
     token: {{ kubernetes_discovery_token }}
+nodeRegistration:
+  kubeletExtraArgs:
+    node-ip: {{ kubernetes_address }}
