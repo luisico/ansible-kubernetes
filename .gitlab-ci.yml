@@ -1,7 +1,7 @@
 image: python:3-slim
 
 before_script:
-  - pip install ansible-lint
+  - pip install ansible-lint "ansible>=2.9,<2.10"
   - ansible-lint --version
 
 stages:
