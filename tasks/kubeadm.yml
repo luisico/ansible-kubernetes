@@ -1,0 +1,62 @@
+---
+- name: Create directory for kubernetes root's config
+  file:
+    path: /etc/kubernetes
+    state: directory
+    mode: 0750
+
+- name: Link kubeconfig in root's home
+  file:
+    dest: ~/.kube/config
+    src: /etc/kubernetes/admin.conf
+    state: link
+    mode: 0400
+    force: true
+  when: kubernetes_role == 'manager'
+
+- name: Check if node has already joined the cluster
+  command: kubectl get nodes -o custom-columns=NAME:.metadata.name --no-headers
+  delegate_to: '{{ kubernetes_leader }}'
+  check_mode: no
+  changed_when: inventory_hostname not in kubernetes__r_joined.stdout_lines
+  failed_when:
+    - kubernetes__r_joined.rc > 0
+    - not (kubernetes_task == 'init' and '"The connection to the server localhost:8080 was refused" not in kubernetes__r_joined.stderr')
+  register: kubernetes__r_joined
+
+- name: Initialize cluster with first node
+  include_tasks: kubeadm-init.yml
+  when:
+    - kubernetes_task == 'init'
+    - kubernetes__r_joined.changed
+
+- name: Prevent NetworkManager from interfering with Calico
+  copy:
+    dest: /etc/NetworkManager/conf.d/calico.conf
+    content: |
+      [keyfile]
+      unmanaged-devices=interface-name:cali*;interface-name:tunl*;interface-name:vxlan.calico
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install calicoctl
+  get_url:
+    url: https://github.com/projectcalico/calicoctl/releases/download/v{{ kubernetes_calicoctl_version }}/calicoctl
+    dest: /usr/bin/calicoctl
+    owner: root
+    group: root
+    mode: 0750
+    force: yes
+  when: kubernetes_role == 'manager'
+
+- name: Initialize CNI
+  include_tasks: calico.yml
+  when:
+    - kubernetes_task == 'init'
+
+- name: Join other nodes to cluster
+  include_tasks: kubeadm-join.yml
+  when:
+    - kubernetes_task == 'join'
+    - kubernetes__r_joined.changed

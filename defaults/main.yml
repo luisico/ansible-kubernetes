@@ -1,3 +1,56 @@
 ---
 # Kubernetes version
 kubernetes_version: 1.19.*
+
+# Cluster name
+kubernetes_cluster_name: kubernetes
+
+# Run kubeadm precheck
+kubernetes_precheck: yes
+
+# Kubeadm task (init, join)
+kubernetes_task:
+
+# Kubernetes role (manager, worker)
+kubernetes_role: worker
+
+# Kubernetes leader
+# Delegate apiserver queries to this node
+# Overwrite with a manager node when invoking `kubernetes_task: join`
+kubernetes_leader: '{{ inventory_hostname }}'
+
+# Main interface for cluster communication
+kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
+
+# API servers
+kubernetes_apiserver_port: 6443
+kubernetes_apiserver_vip_port: 6444
+kubernetes_apiserver_vip_cidr: '{{ ansible_default_ipv4.address }}/{{ (ansible_default_ipv4.address + "/" + ansible_default_ipv4.netmask) | ipaddr("prefix") }}'
+
+# Public access for API server
+kubernetes_public_name:
+kubernetes_public_vip_cidr:
+kubernetes_public_interface:
+
+# Pod network cidr
+kubernetes_pod_cidr: 10.1.0.0/16
+
+# Certificate key
+kubernetes_certificate_key:
+
+# Discovery bootstrap
+kubernetes_discovery_token:
+kubernetes_discovery_hash:
+
+# Calico version
+kubernetes_calico_version: '3.19'
+kubernetes_calicoctl_version: '3.19.3'
+
+# Load balancer
+kubernetes_haproxy_image: haproxy:2.4.4-alpine3.14
+kubernetes_keepalived_image: osixia/keepalived:2.0.20
+kubernetes_keepalived_pass:
+kubernetes_keepalived_id: 51
+kubernetes_keepalived_is_master: false
+kubernetes_peers:
+  - '{{ ansible_fqdn }}'

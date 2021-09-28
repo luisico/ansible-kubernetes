@@ -1,0 +1,55 @@
+global_defs {
+  router_id k8s
+  script_user nobody
+  enable_script_security
+}
+
+vrrp_script check_apiserver {
+  script "/usr/local/etc/keepalived/check_apiserver.sh {{ kubernetes_apiserver_vip_cidr | ipaddr("address") }} {{ kubernetes_apiserver_vip_port }}"
+  interval 3
+  weight -2
+  fall 1
+  rise 1
+}
+
+vrrp_instance k8s_cp {
+  interface {{ kubernetes_interface }}
+
+  virtual_router_id {{ kubernetes_keepalived_id }}
+  state {{ 'MASTER' if kubernetes_keepalived_is_master else 'BACKUP' }}
+  priority {{ 101 if kubernetes_keepalived_is_master else 100 }}
+
+  unicast_src_ip {{ kubernetes_address }}
+  unicast_peer {
+{% for host in (kubernetes_peers | difference(ansible_fqdn)) %}
+    {{ hostvars[host]['ansible_' + kubernetes_interface].ipv4.address }}
+{% endfor %}
+  }
+
+  virtual_ipaddress {
+    {{ kubernetes_apiserver_vip_cidr }} dev {{ kubernetes_interface }}
+  }
+
+{% if kubernetes_public_vip_cidr and kubernetes_public_interface %}
+  virtual_ipaddress_excluded {
+    {{ kubernetes_public_vip_cidr }} dev {{ kubernetes_public_interface }}
+  }
+{% endif %}
+
+  authentication {
+    auth_type PASS
+    auth_pass {{ kubernetes_keepalived_pass }}
+  }
+
+  notify /container/service/keepalived/assets/notify.sh
+
+{% if kubernetes_public_vip_cidr and kubernetes_public_interface %}
+  track_interface {
+    {{ kubernetes_public_interface }}
+  }
+{% endif %}
+
+  track_script {
+    check_apiserver
+  }
+}

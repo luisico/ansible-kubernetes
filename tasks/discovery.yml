@@ -1,0 +1,31 @@
+---
+- name: Get list of available join tokens
+  shell: |
+    set -o pipefail
+    kubeadm token list -o json | jq -rs '. | map(select(.description=="Ansible kubernetes bootstrap")) | sort_by(.expires) | last | .token'
+  args:
+    executable: /bin/bash
+  register: kubernetes__r_existing_token
+  changed_when: no
+  delegate_to: '{{ kubernetes_leader }}'
+
+- name: Create short-lived join token if none is available
+  command: kubeadm token create --ttl 15m --description 'Ansible kubernetes bootstrap'
+  register: kubernetes__r_token
+  when: kubernetes__r_existing_token.stdout == 'null'
+  delegate_to: '{{ kubernetes_leader }}'
+
+- name: Get discovery ca cert hash
+  shell: |
+    set -o pipefail
+    openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+  args:
+    executable: /bin/bash
+  register: kubernetes__r_hash
+  changed_when: no
+  delegate_to: '{{ kubernetes_leader }}'
+
+- name: Save discovery token and hash as facts
+  set_fact:
+    kubernetes_discovery_token: '{{ kubernetes__r_token.stdout if kubernetes__r_existing_token.stdout == "null" else kubernetes__r_existing_token.stdout }}'
+    kubernetes_discovery_hash: '{{ kubernetes__r_hash.stdout }}'

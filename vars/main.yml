@@ -10,3 +10,26 @@ kubernetes_packages:
   - kubelet{{ kubernetes_packages_version }}
   - kubeadm{{ kubernetes_packages_version }}
   - kubectl{{ kubernetes_packages_version }}
+
+# IP address from interface name
+kubernetes_address: "{{ hostvars[inventory_hostname]['ansible_' + kubernetes_interface].ipv4.address }}"
+
+# Extra SANs for apiserver:
+kubernetes_apiserver_sans:
+  - '{{ kubernetes_public_name }}'
+  - '{{ kubernetes_public_vip_cidr | ipaddr("address") }}'
+
+# Ignore some kubeadm preflight errors
+kubernetes_kubeadm_init_ignore_errors:
+  - NumCPU
+  - FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml
+  - FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml
+  - FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml
+kubernetes_kubeadm_join_ignore_errors:
+  - NumCPU
+  - DirAvailable--etc-kubernetes-manifests
+  - FileAvailable--etc-kubernetes-manifests-kube-controller-manager.yaml
+  - FileAvailable--etc-kubernetes-manifests-kube-scheduler.yaml
+  - FileAvailable--etc-kubernetes-manifests-kube-apiserver.yaml
+  - FileAvailable--etc-kubernetes-kubelet.conf
+  - FileAvailable--etc-kubernetes-pki-ca.crt

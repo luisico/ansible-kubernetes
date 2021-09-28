@@ -1,0 +1,53 @@
+---
+- name: Get discovery token and hash
+  include_tasks: discovery.yml
+
+- name: Configure kubeadm
+  template:
+    dest: /etc/kubernetes/kubeadm.yaml
+    src: 'kubeadm-join.yaml.j2'
+    mode: 0600
+    owner: root
+    group: root
+
+- name: kubeadm join pre-check
+  command: >-
+    kubeadm join phase preflight --config /etc/kubernetes/kubeadm.yaml
+    --ignore-preflight-errors={{ kubernetes_kubeadm_join_ignore_errors | join(",") }}
+  check_mode: no
+  changed_when: no
+  register: kubernetes__r_precheck
+  when: kubernetes_precheck
+
+- name: Print result from running kubeadm pre-check
+  debug: msg='{{ kubernetes__r_precheck.stdout_lines + kubernetes__r_precheck.stderr_lines }}'
+  when: kubernetes_precheck
+
+- block:
+  - name: Configure control plane (managers only)
+    command: kubeadm join phase control-plane-prepare all --config /etc/kubernetes/kubeadm.yaml
+    args:
+      creates: /etc/kubernetes/manifests/kube-controller-manager.yaml
+    register: kubernetes__r_control_plane
+
+  - name: Print result from configuring control plane  # noqa no-handler
+    debug: msg='{{ kubernetes__r_control_plane.stdout_lines + kubernetes__r_control_plane.stderr_lines }}'
+    when: kubernetes__r_control_plane.changed
+
+  - name: Expose control manager and scheduler metrics to prometheus (managers only)
+    replace:
+      path: '/etc/kubernetes/manifests/kube-{{ item }}.yaml'
+      regexp: '127\.0\.0\.1'
+      replace: '{{ kubernetes_address }}'
+    loop:
+      - controller-manager
+      - scheduler
+
+  when: kubernetes_role == 'manager'
+
+- name: Join cluster          # noqa 301
+  command: kubeadm join --config /etc/kubernetes/kubeadm.yaml --skip-phases=preflight,control-plane-prepare
+  register: kubernetes__r_join
+
+- name: Print result from joining cluster
+  debug: msg='{{ kubernetes__r_join.stdout_lines + kubernetes__r_join.stderr_lines }}'

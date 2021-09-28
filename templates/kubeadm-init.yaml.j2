@@ -1,0 +1,22 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+clusterName: {{ kubernetes_cluster_name }}
+kubernetesVersion: {{ kubernetes__r_installed_version.stdout }}
+controlPlaneEndpoint: {{ kubernetes_apiserver_vip_cidr | ipaddr("address") }}:{{ kubernetes_apiserver_vip_port }}
+networking:
+  podSubnet: {{ kubernetes_pod_cidr }}
+{% if kubernetes_apiserver_sans | select() | list != [] %}
+apiServer:
+  certSANs:
+{% for san in kubernetes_apiserver_sans | select() | list %}
+    - {{ san }}
+{% endfor %}
+{% endif %}
+
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: {{ kubernetes_address }}
+certificateKey: {{ kubernetes_certificate_key }}

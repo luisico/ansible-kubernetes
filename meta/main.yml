@@ -1,10 +1,17 @@
 ---
 galaxy_info:
-  author: Garth Kerr
-  description: Install kubernetes dependencies
+  author: Luis Gracia and Garth Kerr
+  description: Bootstrap kubernetes cluster
   license: MIT
   min_ansible_version: 2.9
   platforms:
     - name: EL
       versions:
         - 7
+  galaxy_tags:
+    - system
+    - container
+    - docker
+    - kubernetes
+    - cluster
+dependencies: []

@@ -1,0 +1,18 @@
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  registry: quay.io
+  calicoNetwork:
+    bgp: Disabled
+    nodeAddressAutodetectionV4:
+      interface: {{ kubernetes_interface }}
+    ipPools:
+    - blockSize: 26
+      cidr: {{ kubernetes_pod_cidr }}
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+  controlPlaneNodeSelector:
+    node-role.kubernetes.io/master: ''
