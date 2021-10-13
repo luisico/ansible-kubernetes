@@ -48,7 +48,7 @@ kubernetes_discovery_hash:
 
 # Calico version
 kubernetes_calico_version: '3.20'
-kubernetes_calicoctl_version: '3.20.1'
+kubernetes_calicoctl_version: '3.20.2'
 
 # Load balancer
 kubernetes_haproxy_image: haproxy:2.4.4-alpine3.14
