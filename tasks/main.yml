@@ -26,6 +26,27 @@
     allow_downgrade: yes
   register: kubernetes__r_install
 
+# Latest cri-tools version provided by the kubernetes repo is 1.13
+# This task will install crictl in /usr/local/bin
+- name: Find installed crictl version
+  command: crictl --version
+  register: kubernetes__r_crictl_version
+  check_mode: no
+  changed_when: no
+  environment:
+    PATH: '/usr/local/bin:{{ ansible_env.PATH }}'
+
+- name: Install crictl for kubernetes {{ kubernetes_version }}
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ kubernetes_crictl_version }}/crictl-{{ kubernetes_crictl_version }}-linux-amd64.tar.gz'
+    dest: /usr/local/bin
+    mode: 0755
+    owner: root
+    group: root
+  register: kubernetes__r_crictl_install
+  when: kubernetes__r_crictl_version.stdout.split()[2] != kubernetes_crictl_version
+
 - name: Install completion scripts
   import_tasks: completion.yml
 

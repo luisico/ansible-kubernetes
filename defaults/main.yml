@@ -2,6 +2,9 @@
 # Kubernetes version
 kubernetes_version: 1.22.*
 
+# cri-tools version (defaults to kubernetes major version)
+kubernetes_crictl_version: 'v{{ kubernetes_version.split(".")[0:2] | join(".") }}.0'
+
 # Cluster name
 kubernetes_cluster_name: kubernetes
 
