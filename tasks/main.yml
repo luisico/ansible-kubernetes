@@ -47,6 +47,14 @@
   register: kubernetes__r_crictl_install
   when: kubernetes__r_crictl_version.stdout.split()[2] != kubernetes_crictl_version
 
+- name: Configure crictl
+  template:
+    dest: /etc/crictl.yaml
+    src: crictl.yaml.j2
+    mode: 0644
+    owner: root
+    group: root
+
 - name: Install completion scripts
   import_tasks: completion.yml
 

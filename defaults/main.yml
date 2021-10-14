@@ -26,6 +26,9 @@ kubernetes_leader: '{{ inventory_hostname }}'
 # See https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/
 kubernetes_cgroup_driver: systemd
 
+# Kubernetes CRI (docker, containerd, cri-o)
+kubernetes_cri: containerd
+
 # Main interface for cluster communication
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
 
