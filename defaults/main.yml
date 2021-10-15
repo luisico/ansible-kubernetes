@@ -1,6 +1,6 @@
 ---
 # Kubernetes version
-kubernetes_version: 1.21.*
+kubernetes_version: 1.22.*
 
 # Cluster name
 kubernetes_cluster_name: kubernetes
@@ -47,8 +47,8 @@ kubernetes_discovery_token:
 kubernetes_discovery_hash:
 
 # Calico version
-kubernetes_calico_version: '3.19'
-kubernetes_calicoctl_version: '3.19.3'
+kubernetes_calico_version: '3.20'
+kubernetes_calicoctl_version: '3.20.2'
 
 # Load balancer
 kubernetes_haproxy_image: haproxy:2.4.4-alpine3.14
