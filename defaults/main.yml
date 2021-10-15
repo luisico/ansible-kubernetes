@@ -2,6 +2,9 @@
 # Kubernetes version
 kubernetes_version: 1.22.*
 
+# cri-tools version (defaults to kubernetes major version)
+kubernetes_crictl_version: 'v{{ kubernetes_version.split(".")[0:2] | join(".") }}.0'
+
 # Cluster name
 kubernetes_cluster_name: kubernetes
 
@@ -22,6 +25,9 @@ kubernetes_leader: '{{ inventory_hostname }}'
 # Cgroups driver
 # See https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/
 kubernetes_cgroup_driver: systemd
+
+# Kubernetes CRI (docker, containerd, cri-o)
+kubernetes_cri: containerd
 
 # Main interface for cluster communication
 kubernetes_interface: '{{ ansible_default_ipv4.alias }}'
