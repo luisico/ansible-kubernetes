@@ -17,6 +17,9 @@ kubernetes_task:
 # Kubernetes role (manager, worker)
 kubernetes_role: worker
 
+# Kubernetes node labels:
+kubernetes_node_labels: []
+
 # Kubernetes leader
 # Delegate apiserver queries to this node
 # Overwrite with a manager node when invoking `kubernetes_task: join`
