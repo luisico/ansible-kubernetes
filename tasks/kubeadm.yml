@@ -60,3 +60,8 @@
   when:
     - kubernetes_task == 'join'
     - kubernetes__r_joined.changed
+
+- name: Add labels to nodes
+  command: kubectl label --overwrite node {{ inventory_hostname }} {{ kubernetes_node_labels | join(" ") }}
+  delegate_to: '{{ kubernetes_leader }}'
+  when: kubernetes_node_labels != []
