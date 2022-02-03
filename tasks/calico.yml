@@ -1,7 +1,7 @@
 ---
 - name: Install Tigera Calico operator
   command: |
-    kubectl apply -f https://docs.projectcalico.org/archive/v{{ kubernetes_calico_version }}/manifests/tigera-operator.yaml {{ "--dry-run=server" if ansible_check_mode }}
+    kubectl apply -f https://docs.projectcalico.org/archive/v{{ kubernetes_calico_version }}/manifests/tigera-operator.yaml {{ "--dry-run=server" if ansible_check_mode }}   # noqa line-length
   changed_when: "'created' in kubernetes__r_tigera.stdout"
   check_mode: false
   register: kubernetes__r_tigera

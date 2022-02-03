@@ -39,7 +39,7 @@
 - name: Install crictl for kubernetes {{ kubernetes_version }}
   unarchive:
     remote_src: true
-    src: 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ kubernetes_crictl_version }}/crictl-{{ kubernetes_crictl_version }}-linux-amd64.tar.gz'
+    src: 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ kubernetes_crictl_version }}/crictl-{{ kubernetes_crictl_version }}-linux-amd64.tar.gz'   # noqa line-length
     dest: /usr/local/bin
     mode: 0755
     owner: root
