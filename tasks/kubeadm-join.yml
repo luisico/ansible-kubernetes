@@ -24,7 +24,7 @@
   when: kubernetes_precheck
 
 - block:
-  - name: Configure control plane (managers only)
+  - name: Configure control plane (managers only)   # noqa indentation
     command: kubeadm join phase control-plane-prepare all --config /etc/kubernetes/kubeadm.yaml
     args:
       creates: /etc/kubernetes/manifests/kube-controller-manager.yaml
