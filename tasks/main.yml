@@ -10,9 +10,9 @@
     name: kubernetes
     description: Kubernetes
     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-    enabled: yes
-    gpgcheck: yes
-    repo_gpgcheck: yes
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
     gpgkey:
       - https://packages.cloud.google.com/yum/doc/yum-key.gpg
       - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
@@ -23,7 +23,7 @@
     name: '{{ kubernetes_packages }}'
     disable_excludes: kubernetes
     state: '{{ kubernetes_packages_state }}'
-    allow_downgrade: yes
+    allow_downgrade: true
   register: kubernetes__r_install
 
 # Latest cri-tools version provided by the kubernetes repo is 1.13
@@ -31,15 +31,15 @@
 - name: Find installed crictl version
   command: crictl --version
   register: kubernetes__r_crictl_version
-  check_mode: no
-  changed_when: no
+  check_mode: false
+  changed_when: false
   environment:
     PATH: '/usr/local/bin:{{ ansible_env.PATH }}'
 
 - name: Install crictl for kubernetes {{ kubernetes_version }}
   unarchive:
-    remote_src: yes
-    src: 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ kubernetes_crictl_version }}/crictl-{{ kubernetes_crictl_version }}-linux-amd64.tar.gz'
+    remote_src: true
+    src: 'https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ kubernetes_crictl_version }}/crictl-{{ kubernetes_crictl_version }}-linux-amd64.tar.gz'   # noqa line-length
     dest: /usr/local/bin
     mode: 0755
     owner: root
@@ -61,8 +61,8 @@
 - name: Find kubernetes installed version
   command: kubeadm version -o short
   register: kubernetes__r_installed_version
-  check_mode: no
-  changed_when: no
+  check_mode: false
+  changed_when: false
 
 - name: Enable kubelet service
   # Note: kubelet will fail until /var/lib/kubelet/config.yaml is put in place by kubeadm init/join

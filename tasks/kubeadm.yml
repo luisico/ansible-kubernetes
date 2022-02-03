@@ -17,7 +17,7 @@
 - name: Check if node has already joined the cluster
   command: kubectl get nodes -o custom-columns=NAME:.metadata.name --no-headers
   delegate_to: '{{ kubernetes_leader }}'
-  check_mode: no
+  check_mode: false
   changed_when: inventory_hostname not in kubernetes__r_joined.stdout_lines
   failed_when:
     - kubernetes__r_joined.rc > 0
@@ -47,7 +47,7 @@
     owner: root
     group: root
     mode: 0750
-    force: yes
+    force: true
   when: kubernetes_role == 'manager'
 
 - name: Initialize CNI
