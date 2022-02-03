@@ -14,8 +14,8 @@
   command: >-
     kubeadm join phase preflight --config /etc/kubernetes/kubeadm.yaml
     --ignore-preflight-errors={{ kubernetes_kubeadm_join_ignore_errors | join(",") }}
-  check_mode: no
-  changed_when: no
+  check_mode: false
+  changed_when: false
   register: kubernetes__r_precheck
   when: kubernetes_precheck
 

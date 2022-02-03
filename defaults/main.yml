@@ -9,7 +9,7 @@ kubernetes_crictl_version: 'v{{ kubernetes_version.split(".")[0:2] | join(".") }
 kubernetes_cluster_name: kubernetes
 
 # Run kubeadm precheck
-kubernetes_precheck: yes
+kubernetes_precheck: true
 
 # Kubeadm task (init, join)
 kubernetes_task:

@@ -3,7 +3,7 @@
   command: |
     kubectl apply -f https://docs.projectcalico.org/archive/v{{ kubernetes_calico_version }}/manifests/tigera-operator.yaml {{ "--dry-run=server" if ansible_check_mode }}
   changed_when: "'created' in kubernetes__r_tigera.stdout"
-  check_mode: no
+  check_mode: false
   register: kubernetes__r_tigera
 
 - name: Print result of installing Tigera operator    # noqa no-handler
@@ -12,7 +12,7 @@
 
 - name: Wait for Tigera Calico operator readiness   # noqa no-handler
   command: kubectl wait -n tigera-operator --for=condition=Available deployment/tigera-operator
-  changed_when: no
+  changed_when: false
   register: kubernetes__r_wait
   until: "'condition met' in kubernetes__r_wait.stdout"
   when: kubernetes__r_tigera.changed
@@ -29,7 +29,7 @@
   command: |
     kubectl apply -f /etc/kubernetes/calico.yaml {{ "--dry-run=server" if ansible_check_mode }}
   changed_when: "'created' in kubernetes__r_calico.stdout"
-  check_mode: no
+  check_mode: false
   register: kubernetes__r_calico
 
 - name: Print result of installing Calico   # noqa no-handler
@@ -38,7 +38,7 @@
 
 - name: Wait for Calico readiness   # noqa no-handler
   command: kubectl wait -n calico-system --for=condition=Ready pod -l {{ item }}
-  changed_when: no
+  changed_when: false
   register: kubernetes__r_wait
   until: "'condition met' in kubernetes__r_wait.stdout"
   retries: 6
