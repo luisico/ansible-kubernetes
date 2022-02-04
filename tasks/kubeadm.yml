@@ -40,16 +40,6 @@
     group: root
     mode: 0644
 
-- name: Install calicoctl
-  get_url:
-    url: https://github.com/projectcalico/calicoctl/releases/download/v{{ kubernetes_calicoctl_version }}/calicoctl
-    dest: /usr/bin/calicoctl
-    owner: root
-    group: root
-    mode: 0750
-    force: true
-  when: kubernetes_role == 'manager'
-
 - name: Initialize CNI
   include_tasks: calico.yml
   when:
@@ -60,6 +50,24 @@
   when:
     - kubernetes_task == 'join'
     - kubernetes__r_joined.changed
+
+- name: Find calico version
+  command: >-
+    kubectl -n calico-system get deployments.apps calico-kube-controllers
+    -o jsonpath='{.spec.template.spec.containers[?(@.name=="calico-kube-controllers")].image}'
+  changed_when: false
+  register: kubernetes__r_calico_image
+  when: kubernetes_role == 'manager'
+
+- name: Install calicoctl
+  get_url:
+    url: https://github.com/projectcalico/calico/releases/download/{{ kubernetes__r_calico_image.stdout.split(":") | last }}/calicoctl-linux-amd64
+    dest: /usr/bin/calicoctl
+    owner: root
+    group: root
+    mode: 0750
+    force: true
+  when: kubernetes_role == 'manager'
 
 - name: Add labels to nodes
   command: kubectl label --overwrite node {{ inventory_hostname }} {{ kubernetes_node_labels | join(" ") }}
