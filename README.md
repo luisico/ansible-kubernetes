@@ -5,6 +5,8 @@ Bootstrap kubernetes cluster.
 
 This role installs kubernetes cluster in high availability. The role needs to be called twice from a playbook, first to bootstrap the cluster on one manager node, and then to join all other nodes (managers and workers).
 
+This role is only compatible with kubernetes and calico minor versions defined in `defaults/main.yml`. Other version combinations might work, but are not supported.
+
 Requirements
 ------------
 See `meta/main.yml`.
