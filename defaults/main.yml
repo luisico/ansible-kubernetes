@@ -59,7 +59,7 @@ kubernetes_discovery_hash:
 kubernetes_calico_version: '3.22'
 
 # Load balancer
-kubernetes_haproxy_image: haproxy:2.4.4-alpine3.14
+kubernetes_haproxy_image: haproxy:2.5.4-alpine3.15
 kubernetes_keepalived_image: osixia/keepalived:2.0.20
 kubernetes_keepalived_pass:
 kubernetes_keepalived_id: 51
