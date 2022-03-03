@@ -58,4 +58,5 @@ Luis Gracia while at [The Rockefeller University](https://www.rockefeller.edu):
 - GitHub at [luisico](https://github.com/luisico)
 - Galaxy at [luisico](https://galaxy.ansible.com/luisico)
 
-Garth Kerr.
+Garth Kerr while at [Rockefeller University](http://www.rockefeller.edu):
+- GitHub at [garthkerr](https://github.com/garthkerr)

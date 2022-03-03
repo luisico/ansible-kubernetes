@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: kubernetes
   author: Luis Gracia and Garth Kerr
   description: Bootstrap kubernetes cluster
   license: MIT
